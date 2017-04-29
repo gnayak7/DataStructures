@@ -46,4 +46,36 @@ public class Tire {
 		}
 		return currentNode.endOfWord;
 	}
+	
+	public void delete(String word) {
+		delete(root, word.toCharArray(), 0);
+	}
+	
+	private boolean delete(TrieNode current, char[] word, int index) {
+		if (index == word.length) {
+			if (current.endOfWord == false) {
+				return false;
+			}
+			// mark false and move on if shorter word for eg: "cab" and "cabbin"
+			current.endOfWord = false;
+			return current.map.size() == 0;
+		}
+		
+		char ch = word[index];
+		if (!current.map.containsKey(ch)){
+			return false;
+		} 
+		
+		boolean deleteCurrentNode = delete(current.map.get(ch), word, index+1);
+		
+		if (deleteCurrentNode) {
+			// prevent a substring word getting deleted when deleting a longer word eg: "cab" and "cabbin"
+			if (current.endOfWord == true) {
+				return false;
+			} 
+			current.map.remove(ch);
+			return current.map.size() == 0;
+		}
+		return false;
+	}	
 }
